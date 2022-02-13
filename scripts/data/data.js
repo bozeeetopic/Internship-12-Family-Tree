@@ -1,8 +1,8 @@
 function returnData()
 {
     let persons = [];
-    persons.push(new Person("Adam","Prvić",null,new Date(-20000,1,1),new Date(0,1,1),gender.male,persons[1]));
-    persons.push(new Person("Eva","Rebrić",null,new Date(-20000,2,2),new Date(0,1,1),gender.female,persons[0]));
-    console.log(persons[0].toString());
+    persons.push(new Person(1,"Adam","Prvić",null,-20000,0,gender.male,2));
+    persons.push(new Person(2,"Eva","Rebrić",1,-20000,0,gender.female,1));
+    persons.push(new Person(3,"Elizabeta","Kraljica",1,-199982,null,gender.female,null));
     return persons;
 }

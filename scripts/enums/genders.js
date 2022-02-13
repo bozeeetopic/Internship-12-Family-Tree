@@ -1,4 +1,4 @@
 const gender = {
     male: 1,
-    female: 2,
+    female: 2
  };

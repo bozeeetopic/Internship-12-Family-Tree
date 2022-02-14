@@ -31,12 +31,12 @@ class Person {
       }
       else 
       {
-        stringToReturn += `- Još živ\t`;
+        stringToReturn += `- Još živ/a\t`;
       }
 
       if(this.parent !== null)
       {
-        stringToReturn += `${this.parent.name}\t`;
+        stringToReturn += `Id: ${this.parent}\t`;
       }
       else 
       {
@@ -45,11 +45,11 @@ class Person {
 
       if(this.significantOther !== null)
       {
-        stringToReturn += `${this.significantOther.name}\t`;
+        stringToReturn += `Oženjen/a\t`;
       }
       else 
       {
-        stringToReturn += `Neoženjen\t`;
+        stringToReturn += `Neoženjen/a\t`;
       }
 
       return stringToReturn;

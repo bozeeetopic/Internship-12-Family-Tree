@@ -111,23 +111,23 @@ function triviaMenu(person, persons){
 }
 
 function chooseAmongChildren(person, persons){
-    let children = [...persons.filter(person => person.parent === person.id)];
+    let children = [...persons.filter(arrayPerson => arrayPerson.parent === person.id)];
     let choice;
 
     let actionString = "Unesi broj uz dite:\n\n";
     for (let i = 0; i < children.length; i++) {
-        actionString += `${i}. - ${children[i].name}\n`
+        actionString += `${i+1}. - ${children[i].name}\n`
     }
-    actionString += `${children.length}. - Exit\n`
+    actionString += `${children.length+1}. - Exit\n`
 
     do
     {
         choice = parseInt(prompt(actionString));
     }
-    while(choice.isNaN()|| choice < 1 || choice > children.length+1)
+    while(isNaN(choice) || choice < 1 || choice > children.length + 1)
 
-    if(choice === children.length){
+    if(choice === children.length + 1){
         return person;
     }
-    return children[choice];
+    return children[choice-1];
 }

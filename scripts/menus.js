@@ -1,16 +1,6 @@
-
-function listActionsList()
-{
-    let actions = [];
-    actions.push({name: "Dodaj člana obitelji", function: listAction.newMember});
-    actions.push({name: "Person died", function: listAction.dead});
-    actions.push({name: "Trivia", function: listAction.trivia});
-    actions.push({name: "Exit", funtion: listAction.exit});
-}
-
-
 function listMenu () {
     let persons = returnData();
+    let choice;
     do
     {
         console.clear();
@@ -20,8 +10,16 @@ function listMenu () {
             console.log(person.toString()+"\n")
         }
 
+        do
+        {
+            choice = parseInt(prompt(`Odaberi 0 za izlaz ili broj koji predstavlja osobu, između 1 i ${persons.length + 1}:`));
+        }
+        while(isNaN(choice) || choice < 0 || choice > actionsList.length + 1)
 
-        let e = prompt("hnjoh");
+        if(choice !== 0)
+        {
+
+        }
     }
     while(e);
 }
@@ -34,7 +32,7 @@ function treeMenu () {
     do
     {
         actionsList = [...treeActionsList()]
-        if(!persons.some(person => person.parent === person.id))
+        if(!persons.some(arrayPerson => arrayPerson.parent === person.id))
         {
             actionsList.splice(4,1);
         }
@@ -50,7 +48,7 @@ function treeMenu () {
            (person.deathYear != null && person.deathYear < person.birthYear + 6) || 
            (new Date().getFullYear() < person.birthYear + 6) || 
            (person.gender === gender.female && person.significantOther != null) ||
-           (persons.find(person => person.significantOther === person.id)?.gender === gender.male))
+           (persons.find(arrayPerson => arrayPerson.significantOther === person.id)?.gender === gender.male))
         {
             actionsList.splice(0,1);
         }
@@ -59,16 +57,16 @@ function treeMenu () {
 
         let actionString = "Unesi broj uz akciju za njeno izvođenje:\n\n";
         for (let i = 0; i < actionsList.length; i++) {
-            actionString += `${i}. - ${actionsList[i].name}\n`
+            actionString += `${i+1}. - ${actionsList[i].name}\n`
         }
 
         do
         {
             choice = parseInt(prompt(actionString));
         }
-        while(isNaN(choice) || choice < 1 || choice > actionsList.length)
+        while(isNaN(choice) || choice < 1 || choice > actionsList.length+1)
 
-        switch(actionsList[choice].function){
+        switch(actionsList[choice - 1].function){
             case treeAction.newMember:
                 addMemberActions(person, persons);
                 break;
@@ -79,15 +77,15 @@ function treeMenu () {
                 triviaMenu(person, persons);
                 break;
             case treeAction.parent:
-                person = persons.find(person => person.id === person.parent);
+                person = persons.find(arrayPerson => arrayPerson.id === person.parent);
                 break;
             case treeAction.children:
-                person = chooseAmongChildren(person, persons);
+                person = new chooseAmongChildren(person, persons);
                 break;
             case treeAction.exit:
                 choice = 0;
                 break;
         }
     }
-    while(choice !== 0);
+    while(choice);
 }

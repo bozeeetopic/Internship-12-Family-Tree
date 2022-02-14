@@ -11,7 +11,70 @@ function treeActionsList()
 }
 
 function addMemberActions(person, persons){
-    return newPerson;
+    if(person.significantOther == null)
+    {
+        let newName = prompt("Unesi ime supružnika:");
+        if(!newName)
+        {
+            return;
+        }
+        let newSurname = prompt("Unesi prezime supružnika:");
+        if(!newSurname)
+        {
+            return;
+        }
+        let newBirthYear = ParseInt(prompt("Unesi godinu rođenja supružnika:"));
+        if(!newBirthYear)
+        {
+            return;
+        }
+        let newGender;
+        if(confirm("Odaberi ok za muški spol, ili cancel za žensko"))
+        {
+            newGender = gender.male;
+        }
+        else
+        {
+            newGender = gender.female;
+        }
+        let newPerson = new Person(persons.length,newName,newSurname,null,newBirthYear,null,newGender,person.id);
+        person.significantOther = newPerson.id;
+        persons.push(newPerson);
+    }
+    else
+    {
+        let minYear = Math.min(person.birthYear + 6 , 
+                          persons.find(person => person.significantOther === person.id)?.birthYear + 6);
+        let maxYear = Math.min(new Date.getFullYear(), 
+                           person.deathYear + 1, 
+                           persons.find(person => person.significantOther === person.id)?.deathYear + 1);
+        let newName = prompt("Unesi ime djeteta:");
+        if(!newName)
+        {
+            return;
+        }
+        let newBirthYear;
+        do
+        {
+            newBirthYear = parseInt(prompt(`Unesi godinu rođenja djeteta, između ${minYear} i ${maxYear}: `));
+        }
+        while(newBirthYear > minYear || newBirthYear < maxYear);
+        if(isNaN(newBirthYear))
+        {
+            return;
+        }
+        let newGender;
+        if(confirm("Odaberi ok za muški spol, ili cancel za žensko"))
+        {
+            newGender = gender.male;
+        }
+        else
+        {
+            newGender = gender.female;
+        }
+        new Person(persons.length,newName,person.surname,person.id,newBirthYear,null,newGender,null);
+        persons.push(newPerson);
+    }
 }
 
 function calculateDeathYear(person, persons){

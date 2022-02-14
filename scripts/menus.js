@@ -2,10 +2,10 @@
 function listActionsList()
 {
     let actions = [];
-    actions.push({name: "Dodaj člana obitelji", function: newMember()});
-    actions.push({name: "Person died", function: died()});
-    actions.push({name: "Trivia", function: triviaMenu()});
-    actions.push({name: "Exit", funtion: 0});
+    actions.push({name: "Dodaj člana obitelji", function: listAction.newMember});
+    actions.push({name: "Person died", function: listAction.dead});
+    actions.push({name: "Trivia", function: listAction.trivia});
+    actions.push({name: "Exit", funtion: listAction.exit});
 }
 
 
@@ -70,10 +70,7 @@ function treeMenu () {
 
         switch(actionsList[choice].function){
             case treeAction.newMember:
-                let newPerson = addMemberActions(person, persons);
-                if(newPerson != null){
-                    persons.push(newPerson);
-                }
+                addMemberActions(person, persons);
                 break;
             case treeAction.dead:
                 person.deathYear = calculateDeathYear(person, persons);

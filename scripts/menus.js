@@ -26,38 +26,67 @@ function listMenu () {
     while(e);
 }
 
-
-function treeActionsList()
-{
-    let actions = [];
-    actions.push({name: "Dodaj člana obitelji", function: treeAction.newMember});
-    actions.push({name: "Person died", function: treeAction.dead});
-    actions.push({name: "Trivia", function: treeAction.trivia});
-    actions.push({name: "Go to parent", function: treeAction.parent});
-    actions.push({name: "Go to children", function: treeAction.children});
-    actions.push({name: "Exit", funtion: treeAction.exit});
-    return actions;
-}
-
 function treeMenu () {
     let persons = returnData();
     let person = persons[0];
     let actionsList = [];
+    let choice;
     do
     {
         actionsList = [...treeActionsList]
-        if(person.deathDate == null)
-            remove go to parent
-
-
-        if(persons.some(person => person.parent === person.id))
+        if(!persons.some(person => person.parent === person.id))
         {
-            actionsList.push({name: "Go to children", function: ChooseAmongChildren(person)});
+            actionsList.splice(4,1);
         }
+        if(person.parent == null)
+        {
+            actionsList.splice(3,1);
+        }
+        if(person.deathDate == null)
+        {
+            actionsList.splice(1,1);
+        }
+        if((person.deathYear != null && person.significantOther == null) || 
+           (person.deathYear != null && person.deathYear < person.birthYear + 6) || 
+           (new Date().getFullYear() < person.birthYear + 6) || 
+           (person.gender === gender.female && person.significantOther != null) ||
+           (persons.find(person => person.significantOther === person.id).gender === gender.male))
+        {
+            actionsList.splice(0,1);
+        }
+        
         console.log(person.toString()+"\n");
-        for (let i = 0; i < array.length; i++) {
-            const element = array[i];
-            
+
+        let actionString = "Unesi broj uz akciju za njeno izvođenje:\n\n";
+        for (let i = 0; i < actionsList.length; i++) {
+            actionString += `${i}. - ${actionsList[i].name}\n`
+        }
+
+        do
+        {
+            choice = parseInt(prompt(actionString));
+        }
+        while(choice.isNaN())
+
+        switch(actionsList[choice].function){
+            case treeAction.newMember:
+                addMemberActions(person, persons);
+                break;
+            case treeAction.dead:
+                person.deathYear = calculateDeathYear(person, persons);
+                break;
+            case treeAction.trivia:
+                triviaMenu(person.id);
+                break;
+            case treeAction.parent:
+                person = persons.find(person => person.id === person.parent);
+                break;
+            case treeAction.children:
+                person = ChooseAmongChildren(person.id, persons);
+                break;
+            case treeAction.exit:
+                choice = 0;
+                break;
         }
     }
     while(choice !== 0);

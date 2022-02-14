@@ -33,7 +33,7 @@ function treeMenu () {
     let choice;
     do
     {
-        actionsList = [...treeActionsList]
+        actionsList = [...treeActionsList()]
         if(!persons.some(person => person.parent === person.id))
         {
             actionsList.splice(4,1);
@@ -50,7 +50,7 @@ function treeMenu () {
            (person.deathYear != null && person.deathYear < person.birthYear + 6) || 
            (new Date().getFullYear() < person.birthYear + 6) || 
            (person.gender === gender.female && person.significantOther != null) ||
-           (persons.find(person => person.significantOther === person.id).gender === gender.male))
+           (persons.find(person => person.significantOther === person.id)?.gender === gender.male))
         {
             actionsList.splice(0,1);
         }
@@ -66,23 +66,26 @@ function treeMenu () {
         {
             choice = parseInt(prompt(actionString));
         }
-        while(choice.isNaN())
+        while(isNaN(choice) || choice < 1 || choice > actionsList.length)
 
         switch(actionsList[choice].function){
             case treeAction.newMember:
-                addMemberActions(person, persons);
+                let newPerson = addMemberActions(person, persons);
+                if(newPerson != null){
+                    persons.push(newPerson);
+                }
                 break;
             case treeAction.dead:
                 person.deathYear = calculateDeathYear(person, persons);
                 break;
             case treeAction.trivia:
-                triviaMenu(person.id);
+                triviaMenu(person, persons);
                 break;
             case treeAction.parent:
                 person = persons.find(person => person.id === person.parent);
                 break;
             case treeAction.children:
-                person = ChooseAmongChildren(person.id, persons);
+                person = chooseAmongChildren(person, persons);
                 break;
             case treeAction.exit:
                 choice = 0;

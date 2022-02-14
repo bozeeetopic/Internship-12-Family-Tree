@@ -24,7 +24,8 @@ function listMenu () {
     while(e);
 }
 
-function treeMenu () {
+function treeMenu () 
+{
     let persons = returnData();
     let person = persons[0];
     let actionsList = [];
@@ -40,12 +41,11 @@ function treeMenu () {
         {
             actionsList.splice(3,1);
         }
-        if(person.deathDate == null)
+        if(person.deathYear != null)
         {
             actionsList.splice(1,1);
         }
-        if((person.deathYear != null && person.significantOther == null) || 
-           (person.deathYear != null && person.deathYear < person.birthYear + 6) || 
+        if((person.deathYear != null && person.deathYear < person.birthYear + 6) || 
            (new Date().getFullYear() < person.birthYear + 6) || 
            (person.gender === gender.female && person.significantOther != null) ||
            (persons.find(arrayPerson => arrayPerson.significantOther === person.id)?.gender === gender.male))
@@ -56,7 +56,8 @@ function treeMenu () {
         console.log(person.toString()+"\n");
 
         let actionString = "Unesi broj uz akciju za njeno izvođenje:\n\n";
-        for (let i = 0; i < actionsList.length; i++) {
+        for (let i = 0; i < actionsList.length; i++) 
+        {
             actionString += `${i+1}. - ${actionsList[i].name}\n`
         }
 
@@ -64,9 +65,10 @@ function treeMenu () {
         {
             choice = parseInt(prompt(actionString));
         }
-        while(isNaN(choice) || choice < 1 || choice > actionsList.length+1)
+        while(isNaN(choice) || choice < 1 || choice > actionsList.length)
 
-        switch(actionsList[choice - 1].function){
+        switch(actionsList[choice - 1].function)
+        {
             case treeAction.newMember:
                 addMemberActions(person, persons);
                 break;
@@ -82,10 +84,8 @@ function treeMenu () {
             case treeAction.children:
                 person = new chooseAmongChildren(person, persons);
                 break;
-            case treeAction.exit:
-                choice = 0;
-                break;
         }
     }
-    while(choice);
+    while(choice != actionsList.length);
+    return;
 }

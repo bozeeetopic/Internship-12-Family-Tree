@@ -1,19 +1,17 @@
 function treeActionsList()
 {
-    let actions = [];
-    actions.push({name: "Dodaj člana obitelji", function: treeAction.newMember});
-    actions.push({name: "Osoba umrla", function: treeAction.dead});
-    actions.push({name: "Trivia", function: treeAction.trivia});
-    actions.push({name: "Idi na roditelja", function: treeAction.parent});
-    actions.push({name: "Idi na dijete", function: treeAction.children});
-    actions.push({name: "Izlaz", funtion: treeAction.exit});
-    return actions;
+    return [{name: "Dodaj člana obitelji", function: treeAction.newMember},
+            {name: "Osoba umrla", function: treeAction.dead},
+            {name: "Trivia", function: treeAction.trivia},
+            {name: "Idi na roditelja", function: treeAction.parent},
+            {name: "Idi na dijete", function: treeAction.children},
+            {name: "Izlaz", funtion: treeAction.exit}];
 }
 
 function addMemberActions(person, persons){
     if(person.significantOther == null)
     {
-        let deathCheck = (person.deathYear == null ? new Date().getFullYear() - 6 : person.deathYear);
+        let deathCheck = (person.deathYear == null ? new Date().getFullYear() - 6 : person.deathYear - 6);
         let maxYear = Math.min(new Date().getFullYear() - 6, deathCheck);
 
         let newName = prompt("Unesi ime supružnika:");
@@ -42,11 +40,12 @@ function addMemberActions(person, persons){
     }
     else
     {
-        let minYear = Math.max(person.birthYear + 6 , 
-                          persons.find(p => p.significantOther === person.id)?.birthYear + 6);
-        let maxYear = Math.min(new Date().getFullYear(), 
-                           person.deathYear + 1, 
-                           persons.find(p => p.significantOther === person.id)?.deathYear + 1);
+        let personDeathCheck = (person.deathYear == null ? new Date().getFullYear() - 6 : person.deathYear - 6);
+        let wife = persons.find(p => p.significantOther === person.id);
+        let wifeDeathCheck = (wife.deathYear == null ? new Date().getFullYear() - 6 : wife.deathYear - 6);
+
+        let minYear = Math.max(person.birthYear + 6 , wife.birthYear + 6);
+        let maxYear = Math.min(new Date().getFullYear(), personDeathCheck, wifeDeathCheck);
 
         let newName = prompt("Unesi ime djeteta:");
         if(!newName)
@@ -68,10 +67,12 @@ function addMemberActions(person, persons){
 }
 
 function calculateDeathYear(person, persons){
-    let children = [...persons.filter(p => p.parent === person.id)];
+    let children = persons.filter(p => p.parent === person.id);
     let minYear;
 
-    minYear = ((children == null || children.length == 0) ? person.birthYear : Math.min(children.map(c => c.birthYear)) + 1)
+    minYear = ((children == null || children.length == 0) ? 
+                person.birthYear : 
+                Math.min(children.map(c => c.birthYear)) + 1)
 
     let deathYear = returnIntMinMax(`Unesi godinu smrti ${person.name}, minimum je: ${minYear}`, minYear, new Date().getFullYear());
 
@@ -105,13 +106,15 @@ function triviaMenu(person, persons){
             nameCounter(persons);
             break;
         case triviaAction.printTree:
-            printTree([...persons[0]], persons);
+            let personZeroToArray = [];
+            personZeroToArray.push(persons[0]);
+            alert(printTree(personZeroToArray, persons));
             break;
     }
 }
 
 function chooseAmongChildren(person, persons){
-    let children = [...persons.filter(p => p.parent === person.id)];
+    let children = persons.filter(p => p.parent === person.id);
 
     let actionString = "Unesi broj uz dite:\n\n";
     for (let i = 0; i < children.length; i++) {

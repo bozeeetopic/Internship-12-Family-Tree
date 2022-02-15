@@ -40,9 +40,9 @@ function addMemberActions(person, persons){
     }
     else
     {
-        let personDeathCheck = (person.deathYear == null ? new Date().getFullYear() - 6 : person.deathYear - 6);
+        let personDeathCheck = (person.deathYear == null ? new Date().getFullYear() : person.deathYear - 1);
         let wife = persons.find(p => p.significantOther === person.id);
-        let wifeDeathCheck = (wife.deathYear == null ? new Date().getFullYear() - 6 : wife.deathYear - 6);
+        let wifeDeathCheck = (wife.deathYear == null ? new Date().getFullYear() : wife.deathYear - 1);
 
         let minYear = Math.max(person.birthYear + 6 , wife.birthYear + 6);
         let maxYear = Math.min(new Date().getFullYear(), personDeathCheck, wifeDeathCheck);

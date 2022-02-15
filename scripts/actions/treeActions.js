@@ -13,27 +13,22 @@ function treeActionsList()
 function addMemberActions(person, persons){
     if(person.significantOther == null)
     {
-        let deathCheck = person.deathYear;
-        if(deathCheck == null){
-            deathCheck = new Date().getFullYear() - 6;
-        }
+        let deathCheck = (person.deathYear == null ? new Date().getFullYear() - 6 : person.deathYear);
         let maxYear = Math.min(new Date().getFullYear() - 6, deathCheck);
+
         let newName = prompt("Unesi ime supružnika:");
         if(!newName)
         {
             return;
         }
+
         let newSurname = prompt("Unesi prezime supružnika:");
         if(!newSurname)
         {
             return;
         }
-        returnInt();
-        do
-        {
-            newBirthYear = parseInt(prompt(`Unesi godinu rođenja supružnika, do maks ${maxYear}: `));
-        }
-        while(newBirthYear > maxYear);
+
+        let newBirthYear = returnIntMax(`Unesi godinu rođenja supružnika, do maks ${maxYear}: `, maxYear);
         if(isNaN(newBirthYear))
         {
             return;
@@ -48,26 +43,23 @@ function addMemberActions(person, persons){
     else
     {
         let minYear = Math.max(person.birthYear + 6 , 
-                          persons.find(arrayPerson => arrayPerson.significantOther === person.id)?.birthYear + 6);
+                          persons.find(p => p.significantOther === person.id)?.birthYear + 6);
         let maxYear = Math.min(new Date().getFullYear(), 
                            person.deathYear + 1, 
-                           persons.find(arrayPerson => arrayPerson.significantOther === person.id)?.deathYear + 1);
+                           persons.find(p => p.significantOther === person.id)?.deathYear + 1);
+
         let newName = prompt("Unesi ime djeteta:");
         if(!newName)
         {
             return;
         }
 
-        let newBirthYear;
-        do
-        {
-            newBirthYear = parseInt(prompt(`Unesi godinu rođenja djeteta, između ${minYear} i ${maxYear}: `));
-        }
-        while(newBirthYear < minYear || newBirthYear > maxYear);
+        let newBirthYear = returnIntMinMax(`Unesi godinu rođenja djeteta, između ${minYear} i ${maxYear}: `, minYear, maxYear);
         if(isNaN(newBirthYear))
         {
             return;
         }
+
         let newGender = (confirm("Odaberi ok za muški spol, ili cancel za žensko") ? gender.male : gender.female);
 
         let newPerson = new Person(persons.length,newName,person.surname,person.id,newBirthYear,null,newGender,null);
@@ -76,42 +68,57 @@ function addMemberActions(person, persons){
 }
 
 function calculateDeathYear(person, persons){
-    let children = [...persons.filter(arrayPerson => arrayPerson.parent === person.id)];
+    let children = [...persons.filter(p => p.parent === person.id)];
     let minYear;
 
-    minYear = ((children == null || children.length == 0) ? person.birthYear : Math.min(children.map(child => child.birthYear)) + 1)
+    minYear = ((children == null || children.length == 0) ? person.birthYear : Math.min(children.map(c => c.birthYear)) + 1)
 
-    do
-    {
-        choice = parseInt(prompt(`Unesi godinu smrti ${person.name}, minimum je: ${minYear}`));
-    }
-    while(choice < minYear || choice > new Date().getFullYear())
+    let deathYear = returnIntMinMax(`Unesi godinu smrti ${person.name}, minimum je: ${minYear}`, minYear, new Date().getFullYear());
 
-    return (isNaN(choice) ? null : choice);
+    return (isNaN(deathYear) ? null : deathYear);
 }
 
 function triviaMenu(person, persons){
 
+    let actionsList = [...triviaActionsList()];
+
+    let actionString = "Unesi broj uz akciju za njeno izvođenje:\n\n";
+    for (let i = 0; i < actionsList.length; i++) 
+    {
+        actionString += `${i+1}. - ${actionsList[i].name}\n`
+    }
+
+    choice = returnIntMinMax(actionString, 1, actionsList.length);
+
+    switch(actionsList[choice - 1].function)
+    {
+        case triviaAction.rootDistance:
+            distanceFromRoot(person, persons);
+            break;
+        case triviaAction.siblingsCount:
+            siblingsCount(person, persons);
+            break;
+        case triviaAction.averageAge:
+            averageAge(person, persons);
+            break;
+        case triviaAction.nameCounter:
+            nameCounter(persons);
+            break;
+        case triviaAction.printTree:
+            printTree([...persons[0]], persons);
+            break;
+    }
 }
 
 function chooseAmongChildren(person, persons){
-    let children = [...persons.filter(arrayPerson => arrayPerson.parent === person.id)];
-    let choice;
+    let children = [...persons.filter(p => p.parent === person.id)];
 
     let actionString = "Unesi broj uz dite:\n\n";
     for (let i = 0; i < children.length; i++) {
         actionString += `${i+1}. - ${children[i].name}\n`
     }
-    actionString += `${children.length+1}. - Exit\n`
 
-    do
-    {
-        choice = parseInt(prompt(actionString));
-    }
-    while(isNaN(choice) || choice < 1 || choice > children.length + 1)
+    let childIndex = returnIntMinMax(actionString, 1, children.length);
 
-    if(choice === children.length + 1){
-        return person;
-    }
-    return children[choice-1];
+    return (isNaN(childIndex) ? person : children[childIndex-1]);
 }

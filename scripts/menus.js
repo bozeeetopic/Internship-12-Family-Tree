@@ -14,7 +14,7 @@ function listMenu () {
         {
             choice = parseInt(prompt(`Odaberi 0 za izlaz ili broj koji predstavlja osobu, između 1 i ${persons.length + 1}:`));
         }
-        while(isNaN(choice) || choice < 0 || choice > actionsList.length + 1)
+        while(choice < 0 || choice > actionsList.length + 1)
 
         if(choice !== 0)
         {
@@ -32,23 +32,26 @@ function treeMenu ()
     let choice;
     do
     {
-        actionsList = [...treeActionsList()]
-        if(!persons.some(arrayPerson => arrayPerson.parent === person.id))
+        actionsList = [...treeActionsList()];
+        if(!persons.some(p => p.parent === person.id))
         {
             actionsList.splice(4,1);
         }
+
         if(person.parent == null)
         {
             actionsList.splice(3,1);
         }
+
         if(person.deathYear != null)
         {
             actionsList.splice(1,1);
         }
+
         if((person.deathYear != null && person.deathYear < person.birthYear + 6) || 
            (new Date().getFullYear() < person.birthYear + 6) || 
            (person.gender === gender.female && person.significantOther != null) ||
-           (persons.find(arrayPerson => arrayPerson.significantOther === person.id)?.gender === gender.male))
+           (persons.find(p => p.significantOther === person.id)?.gender === gender.male))
         {
             actionsList.splice(0,1);
         }
@@ -61,11 +64,7 @@ function treeMenu ()
             actionString += `${i+1}. - ${actionsList[i].name}\n`
         }
 
-        do
-        {
-            choice = parseInt(prompt(actionString));
-        }
-        while(isNaN(choice) || choice < 1 || choice > actionsList.length)
+        choice = returnIntMinMax(actionString, 1, actionsList.length);
 
         switch(actionsList[choice - 1].function)
         {
@@ -79,7 +78,7 @@ function treeMenu ()
                 triviaMenu(person, persons);
                 break;
             case treeAction.parent:
-                person = persons.find(arrayPerson => arrayPerson.id === person.parent);
+                person = persons.find(p => p.id === person.parent);
                 break;
             case treeAction.children:
                 person = new chooseAmongChildren(person, persons);

@@ -15,43 +15,12 @@ class Person {
       let stringToReturn = "";
       stringToReturn += `${this.name} `;
       stringToReturn += `${this.surname} `;
-      if(this.gender === gender.male)
-      {
-        stringToReturn += `- Muško\t\t`;
-      }
-      else
-      {
-        stringToReturn += `- Žensko\t\t`;
-      }
+      stringToReturn += (this.gender === gender.male ? `- Muško\t\t` : `- Žensko\t\t`);
       stringToReturn += `${this.birthYear} `;
-
-      if(this.deathYear !== null)
-      {
-        stringToReturn += `- ${this.deathYear}\t`;
-      }
-      else 
-      {
-        stringToReturn += `- Još živ/a\t`;
-      }
-
-      if(this.parent !== null)
-      {
-        stringToReturn += `Id: ${this.parent}\t`;
-      }
-      else 
-      {
-        stringToReturn += `Bog\t\t`;
-      }
-
-      if(this.significantOther !== null)
-      {
-        stringToReturn += `Oženjen/a\t`;
-      }
-      else 
-      {
-        stringToReturn += `Neoženjen/a\t`;
-      }
-
+      stringToReturn += (this.deathYear !== null ? `- ${this.deathYear}\t` : `- Još živ/a\t`);
+      stringToReturn += (this.parent !== null ? `Id: ${this.parent}\t` : `Bog\t\t`);
+      stringToReturn += (this.significantOther !== null ? `Oženjen/a\t` : `Neoženjen/a\t`);
+      
       return stringToReturn;
     }
   }

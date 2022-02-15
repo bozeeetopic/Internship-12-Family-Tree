@@ -28,9 +28,9 @@ function siblingsCount(person, persons)
 
 function averageAge(person, persons)
 {
-    let genderGroup = [...persons.filter(p => p.gender === person.gender)];
+    let genderGroup = persons.filter(p => p.gender === person.gender);
     genderGroup = (person.gender == gender.male ?  genderGroup : 
-        [...genderGroup.filter(p => p.surname === persons[0].surname)])
+        genderGroup.filter(p => p.surname === persons[0].surname))
     
     let averageAge = 0;
     genderGroup.forEach(p => (
@@ -47,9 +47,24 @@ function averageAge(person, persons)
 
 function nameCounter(persons)
 {
+    let names = [];
+    persons.forEach(p => (
+        names.some(n => n.name === p.name) ? 
+        names.find(n => n.name === p.name).counter++ : 
+        names.push({name: p.name, counter: 1})
+    ));
+    names.sort((a,b) => (a.counter > b.counter) ? 1 : ((b.counter > a.counter) ? -1 : 0));
 
+    console.log("Name\t\t-\t\tCounter")
+    names.forEach(n => console.log(`${n.name}\t\t-\t\t${n.counter}`));
 }
+
 function printTree(sameLevelPersons, persons)
 {
-    sameLevelPersons.forEach(p => console.log(p.name))
+    if(sameLevelPersons == null || sameLevelPersons.length == 0)
+    sameLevelPersons.forEach(p => console.log(p.name+"\t"));
+    onsole.log("\n");
+    let nextLevel = [];
+    sameLevelPersons.forEach(p => nextLevel.push(persons.filter(f => f.parent === p.id)));
+    printTree(sameLevelPersons, persons);
 }

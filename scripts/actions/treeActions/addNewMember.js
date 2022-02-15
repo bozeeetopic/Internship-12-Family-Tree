@@ -29,7 +29,7 @@ function addMemberActions(person, persons) {
       : gender.female;
 
     let newPerson = new Person(
-      persons.length,
+      persons.length + 1,
       newName,
       newSurname,
       null,
@@ -75,7 +75,7 @@ function addMemberActions(person, persons) {
       : gender.female;
 
     let newPerson = new Person(
-      persons.length,
+      persons.length + 1,
       newName,
       person.surname,
       person.id,

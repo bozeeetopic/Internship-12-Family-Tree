@@ -17,8 +17,8 @@ function printTree(sameLevelPersons, persons) {
 
   let nextLevel = [];
   sameLevelPersons.forEach((p) =>
-    persons.some((f) => f.parent === p.id)
-      ? nextLevel.push(persons.filter((f) => f.parent === p.id))
+    persons.some((s) => s.parent === p.id)
+      ? (nextLevel = nextLevel.concat(persons.filter((f) => f.parent === p.id)))
       : console.log("")
   );
 
